@@ -1,6 +1,6 @@
 # Advanced Machine Learning Project 2
 
-# importing some relevant libraries
+# First we will be importing some relevant libraries
 ```
 import numpy as np
 import pandas as pd
@@ -128,3 +128,67 @@ ax.set_title('Boston Housing Prices',fontsize=16,color='purple')
 ```
 ![scatterplot2](https://user-images.githubusercontent.com/78623027/153656345-b8486469-5733-49f8-a9a6-d3d2fbd832e4.png)
 
+```
+x = data['rooms'].values
+y = data['cmedv'].values
+
+xtrain, xtest, ytrain, ytest = tts(x,y,test_size=0.25, random_state=123)
+
+```
+### Applying locally weighted regression to the Boston Housing Data Set:
+
+```
+scale = StandardScaler()
+xtrain_scaled = scale.fit_transform((xtrain).reshape(-1,1))
+xtest_scaled = scale.transform((xtest).reshape(-1,1))
+
+yhat_test = lowess_reg(xtrain_scaled.ravel(),ytrain,xtest_scaled,tricubic,0.1)
+
+mse(yhat_test,ytest)
+
+#43.818769754447246
+```
+
+### Applying Random Forest Regression to the Boston Housing Data Set:
+```
+rf = RandomForestRegressor(n_estimators=100,max_depth=3)
+rf.fit(xtrain_scaled,ytrain)
+#RandomForestRegressor(max_depth=3)
+
+mse(ytest,rf.predict(xtest_scaled))
+#44.06947431480829
+
+yhat_test = lowess_reg(xtrain_scaled.ravel(),ytrain,xtest_scaled.ravel(),tricubic,0.1)
+```
+
+### Calculating crossvalidated mean squared error for both methods:
+```
+kf = KFold(n_splits=10,shuffle=True,random_state=310)
+mse_lwr = []
+mse_rf = []
+
+rf = RandomForestRegressor(n_estimators=100,max_depth=3)
+
+mse_lwr = []
+mse_rf = []
+
+for idxtrain,idxtest in kf.split(x):
+  ytrain = y[idxtrain]
+  xtrain = x[idxtrain]
+  xtrain = scale.fit_transform(xtrain.reshape(-1,1))
+  ytest = y[idxtest]
+  xtest = x[idxtest]
+  xtest = scale.transform(xtest.reshape(-1,1))
+  yhat_lwr = lowess_reg(xtrain.ravel(),ytrain,xtest.ravel(),tricubic,0.5)
+  rf.fit(xtrain,ytrain)
+  yhat_rf = rf.predict(xtest)
+  mse_lwr.append(mse(ytest,yhat_lwr))
+  mse_rf.append(mse(ytest,yhat_rf))
+  
+  np.mean(mse_lwr)
+  #36.6550430330479
+  
+  np.mean(mse_rf)
+  #35.881965942428394
+```
+  ## The random forest regression model has a lower MSE and therefore achieved better results.
