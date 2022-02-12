@@ -17,13 +17,27 @@ from sklearn.preprocessing import StandardScaler
 
 ### Locally Weighted Regression: 
 
-Locally weighted regression is a way of estimating a regression surface through a multivariate smoothing procedure, fitting a function of the independent variables locally and in a moving fashion analogous to how a moving average is computed for a time series. With local fitting we can estimate a much wider class of regression surfaces than with the usual classes of parametric functions, such as polynomials.
+* Locally weighted regression is a way of estimating a regression surface through a multivariate smoothing procedure, fitting a function of the independent variables locally and in a moving fashion analogous to how a moving average is computed for a time series. With local fitting we can estimate a much wider class of regression surfaces than with the usual classes of parametric functions, such as polynomials.
 
+* This method to used frequently where simply linear models would not work. For instance the following data plot using a simply linear regression is clearly not the best model to be using here. 
+
+![Linear-Regression-on-non-linear-data](https://user-images.githubusercontent.com/78623027/153694741-c103346f-7cea-4b5a-85c9-9a99d5e4b8da.png)
+
+* So instead of having a straight line that tries to fit all data fits at the best of its ability the locally weight regression does fit the data at a local and weighted interval level. This is seen in the following graph. 
+
+![Locally-Weighted-Linear-Regression-1](https://user-images.githubusercontent.com/78623027/153694784-b93bfca3-1c8a-4273-a3e7-23951f5650f4.png)
 
 
 ### Random Forest Regressions:
 
-Random forest is a type of supervised learning algorithm that uses ensemble methods (bagging) to solve both regression and classification problems. The algorithm operates by constructing a multitude of decision trees at training time and outputting the mean/mode of prediction of the individual trees. This is personally one of my favorite types of regressions methods. This is because of the wide application this can be utilized. Personally I am using this method with boosting methods such as **catboost and XgBoost**. 
+* Random forest is a type of supervised learning algorithm that uses ensemble methods (also known as bagging) to solve both the regression and the classification problems. The algorithm works by constructing a multitude of decision trees at training time and outputting the mean/mode of prediction of the individual trees. 
+* Every decision tree has high variance, but when you combined all of them together in parallel then the resultant variance is low as each decision tree gets perfectly trained on that particular sample data and hence the output doesn’t depend on one decision tree but multiple decision trees. 
+* In the case of a classification problem, the final output is taken by using the majority voting classifier. In the case of a regression problem, the final output is the mean of all the outputs. This part is Aggregation. 
+* This is personally one of my favorite types of regressions methods. This is because of the wide application this can be utilized. 
+
+![Capture482](https://user-images.githubusercontent.com/78623027/153694831-95c2024b-8ebf-44e7-8ae1-1ed0874d2421.png)
+
+
 
 ### Defining the Kernel and Regression functions:
 
@@ -94,7 +108,7 @@ plt.scatter(x,y)
 ```
 ![Scatterplot 1](https://user-images.githubusercontent.com/78623027/153656166-f4b9776b-5122-4c03-b098-98ef3a73b7eb.png)
 
-# we want to split the data into a train/test set and we want to standardize correctly
+# Now we want to split the data into a train/test set and we want to standardize correctly
 ```
 xtrain, xtest, ytrain, ytest = tts(x,y,test_size=0.25, random_state=123)
 ```
@@ -191,4 +205,4 @@ for idxtrain,idxtest in kf.split(x):
   np.mean(mse_rf)
   #35.881965942428394
 ```
-  ## The random forest regression model has a lower MSE and therefore achieved better results.
+## The random forest regression model has a lower MSE and therefore achieved better results.
